@@ -57,41 +57,48 @@ final class ProfileViewController: UIViewController {
     
     private func configFavorite() {
         if let profile = profile {
-            if viewModel.callFuncToCheckProfile(profile) {
-                favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-            } else {
-                favoriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+            DispatchQueue.main.async {
+                if self.viewModel.callFuncToCheckProfile(profile) {
+                    self.favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                } else {
+                    self.favoriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                }
             }
+            
         }
     }
     
     private func configStatus() {
-        if viewStatus == .followers {
-            followersButton.backgroundColor = .white
-            followersButton.tintColor = .systemBrown
-            followingButton.backgroundColor = .systemBrown
-            followingButton.tintColor = .white
-            tableData = followers
-        } else {
-            followingButton.backgroundColor = .white
-            followingButton.tintColor = .systemBrown
-            followersButton.backgroundColor = .systemBrown
-            followersButton.tintColor = .white
-            tableData = following
+        DispatchQueue.main.async {
+            if self.viewStatus == .followers {
+                self.followersButton.backgroundColor = .white
+                self.followersButton.tintColor = .systemBrown
+                self.followingButton.backgroundColor = .systemBrown
+                self.followingButton.tintColor = .white
+                self.tableData = self.followers
+            } else {
+                self.followingButton.backgroundColor = .white
+                self.followingButton.tintColor = .systemBrown
+                self.followersButton.backgroundColor = .systemBrown
+                self.followersButton.tintColor = .white
+                self.tableData = self.following
+            }
         }
     }
     
     private func reloadUserUI() {
-        avatarImage.loadFrom(URLAddress: profile?.avatarURL ?? "")
-        nameAndAddressLabel.text = profile?.name ?? ""
-        if nameAndAddressLabel.text != nil  && profile?.company != nil {
-            nameAndAddressLabel.text = nameAndAddressLabel.text ?? "" + " * "
+        DispatchQueue.main.async {
+            self.avatarImage.loadFrom(URLAddress: self.profile?.avatarURL ?? "")
+            self.nameAndAddressLabel.text = self.profile?.name ?? ""
+            if self.nameAndAddressLabel.text != nil  && self.profile?.company != nil {
+                self.nameAndAddressLabel.text = self.nameAndAddressLabel.text ?? "" + " * "
+            }
+            self.nameAndAddressLabel.text = self.nameAndAddressLabel.text ?? "" + (self.profile?.company ?? "")
+            self.skillLabel.text = self.profile?.bio
+            self.countFollowersLabel.text = String(self.profile?.followers ?? 0)
+            self.countFollowingLabel.text = String(self.profile?.following ?? 0)
+            self.countRepositoryLabel.text = String(self.profile?.publicRepos ?? 0)
         }
-        nameAndAddressLabel.text = nameAndAddressLabel.text ?? "" + (profile?.company ?? "")
-        skillLabel.text = profile?.bio
-        countFollowersLabel.text = String(profile?.followers ?? 0)
-        countFollowingLabel.text = String(profile?.following ?? 0)
-        countRepositoryLabel.text = String(profile?.publicRepos ?? 0)
     }
     
     private func callToViewModelForUIUpdate() {
